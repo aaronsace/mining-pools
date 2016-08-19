@@ -3,6 +3,7 @@
   "beeeeer": "\\Account\\MiningPool\\Beeeeer",
   "bitminter": "\\Account\\MiningPool\\BitMinter",
   "btcguild": "\\Account\\MiningPool\\BTCGuild",
+  "clevermining": "\\Account\\MiningPool\\CleverMining",
   "coinhuntr": "\\Account\\MiningPool\\CoinHuntr",
   "cryptopools_dgc": "\\Account\\MiningPool\\CryptoPoolsDGC",
   "cryptotroll_doge": "\\Account\\MiningPool\\CryptoTrollDOGE",
