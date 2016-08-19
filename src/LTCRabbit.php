@@ -14,20 +14,20 @@ use \Apis\Fetch;
 use \Openclerk\Currencies\CurrencyFactory;
 
 /**
- * Represents the zpool.ca mining pool.
+ * Represents the ltcrabbit.com mining pool.
  */
-class ZPool extends AbstractMiner {
+class LTCRabbit extends AbstractMiner {
 
   public function getName() {
-    return "zpool.ca";
+    return "ltcrabbit.com";
   }
 
   public function getCode() {
-    return "zpool";
+    return "ltcrabbit";
   }
 
   public function getURL() {
-    return "http://zpool.ca/";
+    return "http://ltcrabbit.com/";
   }
 
   public function getFields() {
@@ -41,7 +41,7 @@ class ZPool extends AbstractMiner {
 
   public function fetchSupportedCurrencies(CurrencyFactory $factory, Logger $logger) {
     // there is no API call to list supported currencies
-    return array('btc');
+    return array('btc', 'ltc');
   }
 
   public function fetchSupportedHashrateCurrencies(CurrencyFactory $factory, Logger $logger) {
@@ -59,13 +59,19 @@ class ZPool extends AbstractMiner {
         $abbr = $instance->getAbbr();
       }
 
-      $url = "http://www.zpool.ca/api/wallet?address=" . urlencode($account['api_key']);
+      $url = "https://www.ltcrabbit.com/index.php?page=api&action=getappdata&appname=openclerk&appversion=1&api_key=" . urlencode($account['api_key']);
       $json = $this->fetchJSON($url, $logger);
 
-      $result[$cur] = array(
-        'confirmed' => $json['balance'],
-        'unconfirmed' => $json['unsold'],
-      );
+      switch ($cur) {
+        case "btc": 
+          $result[$cur] = array(
+            'confirmed' => $json['getappdata']['user']['balance_btc'],
+          );
+        case "ltc": 
+          $result[$cur] = array(
+            'confirmed' => $json['getappdata']['user']['balance'],
+          );
+      }
     }
 
     return $result;

@@ -28,6 +28,7 @@
   "liteguardian": "\\Account\\MiningPool\\LiteGuardian",
   "litepooleu": "\\Account\\MiningPool\\LitepoolEu",
   "ltcmineru": "\\Account\\MiningPool\\LTCMineRu",
+  "ltcrabbit": "\\Account\\MiningPool\\LTCRabbit",
   "miningforeman": "\\Account\\MiningPool\\MiningForemanLTC",
   "miningforeman_ftc": "\\Account\\MiningPool\\MiningForemanFTC",
   "miningpoolco": "\\Account\\MiningPool\\MiningPoolCo",
