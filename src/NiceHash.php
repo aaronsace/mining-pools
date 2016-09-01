@@ -60,10 +60,20 @@ class NiceHash extends AbstractMiner {
       throw new AccountFetchException($json['result']['error']);
     }
 
+    $unconfirmed = 0;
+    foreach (json_decode(@file_get_contents("https://www.nicehash.com/api?method=buy.info"))->{'result'}->{'algorithms'} as $algo) {
+      for ($location = 0; $location <= 1; $location++) {
+        foreach (json_decode(@file_get_contents("https://www.nicehash.com/api?method=orders.get&my&id=" . urlencode($account['api_id']) . "&key=" . urlencode($account['api_key']) . "&location=" . $location . "&algo=" . $algo->{'algo'}))->{'result'}->{'orders'} as $order) {
+          $unconfirmed += $order->{'btc_avail'};
+        }
+      }
+    }
+
     return array(
       'btc' => array(
         'confirmed' => $json['result']['balance_confirmed'],
         'pending' => $json['result']['balance_pending'],
+        'unconfirmed' => $unconfirmed,
       ),
     );
 
