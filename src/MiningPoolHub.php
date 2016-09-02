@@ -32,6 +32,10 @@ class MiningPoolHub extends AbstractMiner {
 
   public function getFields() {
     return array(
+      'api_id' => array(
+        'title' => "API ID",
+        'regexp' => "#^[0-9]+$#",
+      ),
       'api_key' => array(
         'title' => "API key",
         'regexp' => "#^.{20}$#"
@@ -41,7 +45,7 @@ class MiningPoolHub extends AbstractMiner {
 
   public function fetchSupportedCurrencies(CurrencyFactory $factory, Logger $logger) {
     // there is no API call to list supported currencies
-    return array('btc'); // need to add Adzcoin, Aricoin, Checkcoin, Crevacoin, Dash, Digibyte (Groestl), Digibyte (Qubit), Digibyte (Skein), Digitalcoin (X11), Ethereum, Ethereum-Classic, Execoin, Fractalcoin, Feathercoin, Geocoin, Givecoin, Globalboosty, Granite, Groestlcoin, Influx, Litecoin, Maxcoin, Monetaryunit, Myriadcoin (Groestl), Myriadcoin (Qubit), Myriadcoin (Skein), Netcoin, Phoenixcoin, Potcoin, Quark, Securecoin, Sexcoin, Siacoin, Smartcoin, Solarcoin, Startcoin, Ufocoin, Uro, Vcash, Vertcoin and Verge (Scrypt)
+    return array('btc','ltc'); // need to add Adzcoin, Aricoin, Checkcoin, Crevacoin, Dash, Digibyte (Groestl), Digibyte (Qubit), Digibyte (Skein), Digitalcoin (X11), Ethereum, Ethereum-Classic, Execoin, Fractalcoin, Feathercoin, Geocoin, Givecoin, Globalboosty, Granite, Groestlcoin, Influx, Maxcoin, Monetaryunit, Myriadcoin (Groestl), Myriadcoin (Qubit), Myriadcoin (Skein), Netcoin, Phoenixcoin, Potcoin, Quark, Securecoin, Sexcoin, Siacoin, Smartcoin, Solarcoin, Startcoin, Ufocoin, Uro, Vcash, Vertcoin and Verge (Scrypt)
   }
 
   public function fetchSupportedHashrateCurrencies(CurrencyFactory $factory, Logger $logger) {
@@ -62,6 +66,13 @@ class MiningPoolHub extends AbstractMiner {
       switch ($cur) {
         case "btc": 
           $url = "http://bitcoin.miningpoolhub.com/index.php?page=api&action=getuserbalance&api_key=" . urlencode($account['api_key']) . "&id=" . urlencode($account['api_id']);
+          $json = $this->fetchJSON($url, $logger);
+          $result[$cur] = array(
+            'confirmed' => $json['getuserbalance']['data']['confirmed'],
+            'unconfirmed' => $json['getuserbalance']['data']['unconfirmed'],
+          );
+        case "ltc": 
+          $url = "http://litecoin.miningpoolhub.com/index.php?page=api&action=getuserbalance&api_key=" . urlencode($account['api_key']) . "&id=" . urlencode($account['api_id']);
           $json = $this->fetchJSON($url, $logger);
           $result[$cur] = array(
             'confirmed' => $json['getuserbalance']['data']['confirmed'],

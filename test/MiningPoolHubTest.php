@@ -53,6 +53,8 @@ class MiningPoolHubTest extends AbstractMiningPoolTest {
   function doTestValidValues($balances) {
     $this->assertEquals(0, $balances['btc']['confirmed']);
     $this->assertEquals(0, $balances['btc']['unconfirmed']);
+    $this->assertEquals(0, $balances['ltc']['confirmed']);
+    $this->assertEquals(0, $balances['ltc']['unconfirmed']);
   }
 
 }
