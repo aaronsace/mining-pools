@@ -11,12 +11,12 @@ use Openclerk\Config;
 use Openclerk\Currencies\Currency;
 
 /**
- * Tests the {@link LTCRabbit} account type.
+ * Tests the {@link MiningPoolHub} account type.
  */
-class LTCRabbitTest extends AbstractMiningPoolTest {
+class MiningPoolHubTest extends AbstractMiningPoolTest {
 
   function __construct() {
-    parent::__construct(new \Account\MiningPool\LTCRabbit());
+    parent::__construct(new \Account\MiningPool\MiningPoolHub());
   }
 
   /**
@@ -25,7 +25,7 @@ class LTCRabbitTest extends AbstractMiningPoolTest {
    */
   function getValidAccount() {
     return array(
-      'api_key' => '7ca421ef0b4c700543a0ca6b020e415614ec5fa768483859d0eb56af015a06f2',
+      'api_key' => '3f92996d71ca91be5bf5cee9f332fa6b06d428d038b5be41c6ece066eaaf83ff',
     );
   }
 
@@ -36,7 +36,7 @@ class LTCRabbitTest extends AbstractMiningPoolTest {
    */
   function getMissingAccount() {
     return array(
-      'api_key' => '8ca421ef0b4c700543a0ca6b020e415614ec5fa768483859d0eb56af015a06f2',
+      'api_key' => '4f92996d71ca91be5bf5cee9f332fa6b06d428d038b5be41c6ece066eaaf83ff',
     );
   }
 
@@ -51,7 +51,8 @@ class LTCRabbitTest extends AbstractMiningPoolTest {
   }
 
   function doTestValidValues($balances) {
-    $this->assertEquals(0, $balances['ltc']['confirmed']);
+    $this->assertEquals(0, $balances['btc']['confirmed']);
+    $this->assertEquals(0, $balances['btc']['unconfirmed']);
   }
 
 }

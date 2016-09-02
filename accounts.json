@@ -33,6 +33,7 @@
   "miningforeman": "\\Account\\MiningPool\\MiningForemanLTC",
   "miningforeman_ftc": "\\Account\\MiningPool\\MiningForemanFTC",
   "miningpoolco": "\\Account\\MiningPool\\MiningPoolCo",
+  "miningpoolhub": "\\Account\\MiningPool\\MiningPoolHub",
   "multipool": "\\Account\\MiningPool\\Multipool",
   "mupool": "\\Account\\MiningPool\\MuPool",
   "nicehash": "\\Account\\MiningPool\\NiceHash",
