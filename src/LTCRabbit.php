@@ -41,7 +41,7 @@ class LTCRabbit extends AbstractMiner {
 
   public function fetchSupportedCurrencies(CurrencyFactory $factory, Logger $logger) {
     // there is no API call to list supported currencies
-    return array('btc', 'ltc');
+    return array('ltc');
   }
 
   public function fetchSupportedHashrateCurrencies(CurrencyFactory $factory, Logger $logger) {
@@ -63,10 +63,6 @@ class LTCRabbit extends AbstractMiner {
       $json = $this->fetchJSON($url, $logger);
 
       switch ($cur) {
-        case "btc": 
-          $result[$cur] = array(
-            'confirmed' => $json['getappdata']['user']['balance_btc'],
-          );
         case "ltc": 
           $result[$cur] = array(
             'confirmed' => $json['getappdata']['user']['balance'],
