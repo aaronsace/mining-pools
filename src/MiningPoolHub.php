@@ -45,7 +45,7 @@ class MiningPoolHub extends AbstractMiner {
 
   public function fetchSupportedCurrencies(CurrencyFactory $factory, Logger $logger) {
     // there is no API call to list supported currencies
-    return array('btc','ltc'); // need to add Adzcoin, Aricoin, Checkcoin, Crevacoin, Dash, Digibyte (Groestl), Digibyte (Qubit), Digibyte (Skein), Digitalcoin (X11), Ethereum, Ethereum-Classic, Execoin, Fractalcoin, Feathercoin, Geocoin, Givecoin, Globalboosty, Granite, Groestlcoin, Influx, Maxcoin, Monetaryunit, Myriadcoin (Groestl), Myriadcoin (Qubit), Myriadcoin (Skein), Netcoin, Phoenixcoin, Potcoin, Quark, Securecoin, Sexcoin, Siacoin, Smartcoin, Solarcoin, Startcoin, Ufocoin, Uro, Vcash, Vertcoin and Verge (Scrypt)
+    return array('btc','dgc','ftc','ltc','net','vtc'); // need to add Adzcoin, Aricoin, Checkcoin, Crevacoin, Dash, Digibyte (Groestl), Digibyte (Qubit), Digibyte (Skein), Ethereum, Ethereum-Classic, Execoin, Fractalcoin, Geocoin, Givecoin, Globalboosty, Granite, Groestlcoin, Influx, Maxcoin, Monetaryunit, Myriadcoin (Groestl), Myriadcoin (Qubit), Myriadcoin (Skein), Phoenixcoin, Potcoin, Quark, Securecoin, Sexcoin, Siacoin, Smartcoin, Solarcoin, Startcoin, Ufocoin, Uro, Vcash and Verge (Scrypt)
   }
 
   public function fetchSupportedHashrateCurrencies(CurrencyFactory $factory, Logger $logger) {
@@ -63,22 +63,29 @@ class MiningPoolHub extends AbstractMiner {
         $abbr = $instance->getAbbr();
       }
 
+      $pool = "";
+
       switch ($cur) {
         case "btc": 
-          $url = "http://bitcoin.miningpoolhub.com/index.php?page=api&action=getuserbalance&api_key=" . urlencode($account['api_key']) . "&id=" . urlencode($account['api_id']);
-          $json = $this->fetchJSON($url, $logger);
-          $result[$cur] = array(
-            'confirmed' => $json['getuserbalance']['data']['confirmed'],
-            'unconfirmed' => $json['getuserbalance']['data']['unconfirmed'],
-          );
+          $pool = "bitcoin";
+        case "dgc": 
+          $pool = "digitalcoin";
+        case "ftc": 
+          $pool = "feathercoin";
         case "ltc": 
-          $url = "http://litecoin.miningpoolhub.com/index.php?page=api&action=getuserbalance&api_key=" . urlencode($account['api_key']) . "&id=" . urlencode($account['api_id']);
-          $json = $this->fetchJSON($url, $logger);
-          $result[$cur] = array(
-            'confirmed' => $json['getuserbalance']['data']['confirmed'],
-            'unconfirmed' => $json['getuserbalance']['data']['unconfirmed'],
-          );
+          $pool = "litecoin";
+        case "net": 
+          $pool = "netcoin";
+        case "vtc": 
+          $pool = "vertcoin";
       }
+
+      $url = "http://" . $pool . ".miningpoolhub.com/index.php?page=api&action=getdashboarddata&api_key=" . urlencode($account['api_key']) . "&id=" . urlencode($account['api_id']);
+      $json = $this->fetchJSON($url, $logger)->{'getdashboarddata'};
+      $result[$cur] = array(
+        'confirmed' => ($json['data']['balance']['confirmed'] + $json['data']['balance_for_auto_exchange']['confirmed']),
+        'unconfirmed' => ($json['data']['balance']['unconfirmed'] + $json['data']['balance_for_auto_exchange']['unconfirmed']),
+      );
     }
 
     return $result;

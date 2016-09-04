@@ -53,8 +53,16 @@ class MiningPoolHubTest extends AbstractMiningPoolTest {
   function doTestValidValues($balances) {
     $this->assertEquals(0, $balances['btc']['confirmed']);
     $this->assertEquals(0, $balances['btc']['unconfirmed']);
+    $this->assertEquals(0, $balances['dgc']['confirmed']);
+    $this->assertEquals(0, $balances['dgc']['unconfirmed']);
+    $this->assertEquals(0, $balances['ftc']['confirmed']);
+    $this->assertEquals(0, $balances['ftc']['unconfirmed']);
     $this->assertEquals(0, $balances['ltc']['confirmed']);
     $this->assertEquals(0, $balances['ltc']['unconfirmed']);
+    $this->assertEquals(0, $balances['net']['confirmed']);
+    $this->assertEquals(0, $balances['net']['unconfirmed']);
+    $this->assertEquals(0, $balances['vtc']['confirmed']);
+    $this->assertEquals(0, $balances['vtc']['unconfirmed']);
   }
 
 }
