@@ -45,7 +45,7 @@ class MiningPoolHub extends AbstractMiner {
 
   public function fetchSupportedCurrencies(CurrencyFactory $factory, Logger $logger) {
     // there is no API call to list supported currencies
-    return array('btc','dgc','ftc','ltc','net','vtc'); // need to add Adzcoin, Aricoin, Checkcoin, Crevacoin, Dash, Digibyte (Groestl), Digibyte (Qubit), Digibyte (Skein), Ethereum, Ethereum-Classic, Execoin, Fractalcoin, Geocoin, Givecoin, Globalboosty, Granite, Groestlcoin, Influx, Maxcoin, Monetaryunit, Myriadcoin (Groestl), Myriadcoin (Qubit), Myriadcoin (Skein), Phoenixcoin, Potcoin, Quark, Securecoin, Sexcoin, Siacoin, Smartcoin, Solarcoin, Startcoin, Ufocoin, Uro, Vcash and Verge (Scrypt)
+    return array('btc'); // all converted to BTC
   }
 
   public function fetchSupportedHashrateCurrencies(CurrencyFactory $factory, Logger $logger) {
@@ -54,41 +54,28 @@ class MiningPoolHub extends AbstractMiner {
 
   public function fetchBalances($account, CurrencyFactory $factory, Logger $logger) {
 
-    $result = array();
+    $confirmed = 0;
+    $pending = 0;
+    $unconfirmed = 0;
 
-    foreach ($this->fetchSupportedCurrencies($factory, $logger) as $cur) {
-      $abbr = strtoupper($cur);
-      $instance = $factory->loadCurrency($cur);
-      if ($instance != null) {
-        $abbr = $instance->getAbbr();
-      }
-
-      $pool = "";
-
-      switch ($cur) {
-        case "btc": 
-          $pool = "bitcoin";
-        case "dgc": 
-          $pool = "digitalcoin";
-        case "ftc": 
-          $pool = "feathercoin";
-        case "ltc": 
-          $pool = "litecoin";
-        case "net": 
-          $pool = "netcoin";
-        case "vtc": 
-          $pool = "vertcoin";
-      }
-
-      $url = "http://" . $pool . ".miningpoolhub.com/index.php?page=api&action=getdashboarddata&api_key=" . urlencode($account['api_key']) . "&id=" . urlencode($account['api_id']);
-      $json = $this->fetchJSON($url, $logger)->{'getdashboarddata'};
-      $result[$cur] = array(
-        'confirmed' => ($json['data']['balance']['confirmed'] + $json['data']['balance_for_auto_exchange']['confirmed']),
-        'unconfirmed' => ($json['data']['balance']['unconfirmed'] + $json['data']['balance_for_auto_exchange']['unconfirmed']),
-      );
+    foreach (json_decode(@file_get_contents("http://miningpoolhub.com/index.php?page=api&action=getminingandprofitsstatistics"))->{'return'} as $coin) {
+      $url = "http://" . $coin->{'coin_name'} . ".miningpoolhub.com/index.php?page=api&action=getdashboarddata&api_key=" . urlencode($account['api_key']) . "&id=" . urlencode($account['api_id']);
+      $json = @file_get_contents($url);
+      $data = json_decode($json)->{'getdashboarddata'}->{'data'};
+      $confirmed += ((float)$data->{'balance'}->{'confirmed'} + (float)$data->{'balance_for_auto_exchange'}->{'confirmed'}) * (float)$coin->{'highest_buy_price'};
+      $pending += (float)$data->{'balance_on_exchange'} * (float)$coin->{'highest_buy_price'};
+      $unconfirmed += ((float)$data->{'balance'}->{'unconfirmed'} + (float)$data->{'balance_for_auto_exchange'}->{'unconfirmed'}) * (float)$coin->{'highest_buy_price'};
     }
 
-    return $result;
+    return array(
+      'btc' => array(
+        'confirmed' => $confirmed,
+        'pending' => $pending,
+        'unconfirmed' => $unconfirmed,
+      ),
+    );
+
+    $result = array();
 
   }
 
